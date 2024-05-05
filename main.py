@@ -7,11 +7,12 @@ myheadings = ()
 
 def browseFiles():
     global myheadings
-    filename = filedialog.askopenfilename(initialdir="%USERNAME%",title = "Select a File",filetypes = (("CSV file.","*.csv*"),("all files","*.*")))
+    filename = filedialog.askopenfilename(initialdir = "%USERNAME%", title = "Select a File", filetypes = (("CSV file." ,"*.csv*"),("All files" ,"*.*")))
     lbl_filename.configure(text="File Opened: "+filename)
     myheadings = tuple(csv2array(filename)[0].split(","))
     thedata = csv2array(filename)[1:]
     displaytable(myheadings, thedata).place(x=50,y=125)
+    lbl_status.configure(text="Previewing 20 records.")
 
 def csv2array(file: str):
     return open(file, encoding="utf8").read().splitlines()
@@ -48,5 +49,8 @@ lbl_filename.place(x=110, y=77)
 lbl_filename.configure(text="File: "+ filename)
 
 tk.Button(root, text="Browse", command=browseFiles).place(x=50,y=75)
+
+lbl_status = tk.Label(root, text="", font="Arial 10")
+lbl_status.place(x=50, y=355)
 
 root.mainloop()
