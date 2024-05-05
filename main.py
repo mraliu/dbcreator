@@ -11,7 +11,7 @@ def browseFiles():
     lbl_filename.configure(text="File Opened: "+filename)
     myheadings = tuple(csv2array(filename)[0].split(","))
     thedata = csv2array(filename)[1:]
-    displaytable(myheadings, thedata).place(x=50,y=125)
+    displaytable(myheadings, thedata).place(x=50,y=125, width=700)
     lbl_status.configure(text="Previewing 20 records.")
 
 def csv2array(file: str):
@@ -21,18 +21,18 @@ def displaytable(fielding, thedata):
     treeview = ttk.Treeview(columns=(fielding))
 
     # Unique column
-    treeview.column('#0',anchor=tk.CENTER, stretch=tk.YES, width=100)
+    treeview.column('#0', anchor=tk.CENTER, stretch=tk.YES, width=35)
     treeview.heading('#0', text="#")
 
     # The headings
-    for field in fielding:
-        treeview.column(field,anchor=tk.CENTER, stretch=tk.YES, width=100)
-        treeview.heading(field, text=field)
+    for i in range(0, len(fielding)):
+        treeview.column(fielding[i], anchor=tk.CENTER, stretch=tk.YES, width=80)
+        treeview.heading(fielding[i], text=fielding[i])
 
     # The data
-    for data in thedata:
+    for row, data in enumerate(thedata):
         rowinfo = data.split(",")
-        treeview.insert("", tk.END, text="", values=tuple(rowinfo))
+        treeview.insert("", tk.END, text=row+1, values=tuple(rowinfo))
 
     return treeview
 
