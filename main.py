@@ -3,7 +3,7 @@ from tkinter import filedialog
 from tkinter import ttk
 import tkinter as tk
 
-def browseFiles():
+def browseFiles():  # Part of the browse button
     global myheadings, lbl_status, lbl_filename
     filename = filedialog.askopenfilename(initialdir = "%USERNAME%", title = "Select a File", filetypes = (("CSV file." ,"*.csv*"),("All files" ,"*.*")))
     lbl_filename.configure(text="File opened: "+filename)
