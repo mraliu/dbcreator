@@ -4,16 +4,29 @@ from tkinter import ttk
 import tkinter as tk
 
 # New Features
+def trimstring(str):
+    if str[1][:1] == '"':
+        return str[1][1:-1] # Trim left and right
+    
+def insertdbdata(thedata):
+    for i in range(1, len(thedata)):
+        sql = ""
+
+def createtable():
+    print(myheadings)
+
+    for head in myheadings:
+        sql = "CREATE TABLE exercises ()"
 
 def browseFiles():  # Part of the browse button
-    global myheadings, lbl_status, lbl_filename
+    global myheadings, lbl_status, lbl_filename, thedata
     filename = filedialog.askopenfilename(initialdir = "%USERNAME%", title = "Select a File", filetypes = (("CSV file." ,"*.csv*"),("All files" ,"*.*")))
     lbl_filename.configure(text="File opened: "+filename)
     myheadings = tuple(csv2array(filename)[0].split(","))
     thedata = csv2array(filename)[1:21]
     displaytable(myheadings, thedata).place(x=50,y=125, width=700)
     lbl_status.configure(text="Previewing 20 records.")
-    btn_dbcreate = tk.Button(root, text="Create")
+    btn_dbcreate = tk.Button(root, text="Create", command=createtable)
     btn_dbcreate.place(x=50,y=90)
 
 def csv2array(file: str):
@@ -39,6 +52,7 @@ def displaytable(fielding, thedata):
 
 filename = ""
 myheadings = ()
+thedata = []
 
 # MAIN PROGRAM    
 root = tk.Tk()
