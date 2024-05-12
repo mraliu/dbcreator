@@ -10,7 +10,7 @@ root.title("DB Creator")
 tk.Label(root, text="Tree View", font="Arial 20").place(x=10, y=10)
 
 scrollbarv = tk.Scrollbar(root, orient='vertical')
-scrollbarv.pack(side=tk.RIGHT, fill=tk.Y)
+# scrollbarv.pack(side=tk.RIGHT, fill=tk.Y)
 scrollbarv.place(x=710, y=50, height=200)
 
 
