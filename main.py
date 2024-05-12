@@ -33,7 +33,7 @@ def csv2array(file: str):
     return open(file, encoding="utf8").read().splitlines()
 
 def displaytable(fielding, thedata):
-    treeview = ttk.Treeview(columns=(fielding))
+    treeview = ttk.Treeview(columns=(fielding), yscrollcommand=scrollbar.set())
 
     # Unique column
     treeview.column('#0', anchor=tk.CENTER, stretch=tk.YES, width=35)
@@ -48,6 +48,9 @@ def displaytable(fielding, thedata):
     for row, data in enumerate(thedata):
         rowinfo = data.split(",")
         treeview.insert("", tk.END, text=row+1, values=tuple(rowinfo))
+    
+    scrollbar.config(command = treeview.yview)
+
     return treeview
 
 filename = ""
@@ -59,6 +62,10 @@ root = tk.Tk()
 root.geometry("800x400")
 root.resizable(False,False)
 root.title("DB Creator")
+
+scrollbar = tk.Scrollbar()
+scrollbar.pack(side = tk.RIGHT, fill=tk.Y)
+
 
 tk.Label(root, text="DB Creator", font="Arial 20").place(x=50, y=10)
 
