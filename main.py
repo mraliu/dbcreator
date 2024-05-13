@@ -36,21 +36,48 @@ def createtable():
 
 # Create sqlite3 database
 def createdb(sql):
+    global filen
     import sqlite3
     filen = getnameoffile(filename)
     conn = sqlite3.connect(f'{filen}.db')
     conn.execute(sql)
     conn.close()
+    print("DB closed.")
+
+def insertdatadb():
+    insertarray = []
+    for data in thedata:
+        insertsql = f"INSERT INTO {filen} VALUES ("
+        record = data.split(",")
+        for entity in record:
+            insertsql+=f""""{entity}","""
+        insertsql = insertsql[:-1]
+        insertsql+=")"
+        insertarray.append(insertsql)
+    return insertarray
 
 def createdbtbl():
     createdb(createtable())
+    insertrecords = insertdatadb()
+
+    import sqlite3
+    conn = sqlite3.connect(f'{filen}.db')
+    cursor = conn.cursor()
+
+
+    for record in insertrecords:
+        cursor.execute(record)
+    conn.commit()
+    conn.close()
+    print("Records inserted.")
 
 # GUI for window
 def browseFiles():  # Part of the browse button
-    global csvheadings, thedata, filenamedir, filename
+    global csvheadings, thedata, filenamedir, filename, filen
     filenamedir = filedialog.askopenfilename(initialdir = "%USERNAME%", title = "Select a File", filetypes = (("CSV file." ,"*.csv*"), ("All files" ,"*.*")))
     lbl_filename.configure(text="File opened: "+filenamedir)
     filename = getfilename(filenamedir)
+    filen = getnameoffile(filename)
     csvheadings = tuple(csv2array(filenamedir)[0].split(","))
     thedata = csv2array(filenamedir)[1:21]
 
@@ -67,10 +94,10 @@ def browseFiles():  # Part of the browse button
     scrollbarh.config(command = dataview.xview)
 
     lbl_status.configure(text="Previewing 20 records.")
-    btn_tbcreate = tk.Button(root, text="Create table", command=createtable)
+    btn_tbcreate = tk.Button(root, text="Create db", command=createdbtbl)
     btn_tbcreate.place(x=50,y=90, width=100)
     
-    btn_dbcreate = tk.Button(root, text="Create db", command=createdbtbl)
+    btn_dbcreate = tk.Button(root, text="Insert data", command=insertdatadb)
     btn_dbcreate.place(x=160,y=90, width=100)
 
 def csv2array(file: str):
@@ -93,6 +120,7 @@ def displaytable(fielding, thedata):
 
 filenamedir = ""
 filename = ""
+filen = ""
 csvheadings = () # Need to construct table in db
 thedata = [] # Need to insert into db
 
