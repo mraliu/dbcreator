@@ -2,7 +2,15 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 
-# Check
+# Get filename
+def getfilename(filenamedir):
+    return filenamedir[filenamedir.rfind("/")+1:]
+
+# Get name of file
+def getnameoffile(filename):
+    return filename[:filename.rfind(".")]
+
+# Create the SQL for the inital table by scanning heading of csv
 def createstructure(data):
     tablestructure = [False for _ in range(len(data[0].split(",")))]
     for d in data:
@@ -11,14 +19,6 @@ def createstructure(data):
             tablestructure[id] = field.isnumeric()
     tablestructure = ["INTEGER" if dt == True else "TEXT" for dt in tablestructure ]
     return tablestructure
-
-# Get filename
-def getfilename(filenamedir):
-    return filenamedir[filenamedir.rfind("/")+1:]
-
-# Get name of file
-def getnameoffile(filename):
-    return filename[:filename.rfind(".")]
 
 # SQL Create Statement
 def createtable():
@@ -34,6 +34,16 @@ def createtable():
     print(sql_newtable)
     return sql_newtable
 
+# Create sqlite3 database
+def createdb(sql):
+    import sqlite3
+    filen = getnameoffile(filename)
+    conn = sqlite3.connect(f'{filen}.db')
+    conn.execute(sql)
+    conn.close()
+
+def createdbtbl():
+    createdb(createtable())
 
 # GUI for window
 def browseFiles():  # Part of the browse button
@@ -57,8 +67,11 @@ def browseFiles():  # Part of the browse button
     scrollbarh.config(command = dataview.xview)
 
     lbl_status.configure(text="Previewing 20 records.")
-    btn_dbcreate = tk.Button(root, text="Create", command=createtable)
-    btn_dbcreate.place(x=50,y=90)
+    btn_tbcreate = tk.Button(root, text="Create table", command=createtable)
+    btn_tbcreate.place(x=50,y=90, width=100)
+    
+    btn_dbcreate = tk.Button(root, text="Create db", command=createdbtbl)
+    btn_dbcreate.place(x=160,y=90, width=100)
 
 def csv2array(file: str):
     return open(file, encoding="utf8").read().splitlines()
@@ -98,11 +111,11 @@ tk.Label(root, text="CSV to DBlite3", font="Arial 20").place(x=50, y=10)
 
 # Label for browse
 lbl_filename = tk.Label(root, text="DB Creator", font="Arial 10")
-lbl_filename.place(x=110, y=62)
+lbl_filename.place(x=160, y=62)
 lbl_filename.configure(text="File: "+ filenamedir)
 
 # Button for browse
-tk.Button(root, text="Browse", command=browseFiles).place(x=50,y=60)
+tk.Button(root, text="Browse", command=browseFiles).place(x=50,y=60, width=100)
 
 # Label for status
 lbl_status = tk.Label(root, text="", font="Arial 10")
