@@ -87,14 +87,14 @@ thedata = [] # Need to insert into db
 root = tk.Tk()
 root.geometry("800x400")
 root.resizable(False,False)
-root.title("DB Creator")
+root.title("CSV to DBlite3")
 
 # Scrollbars
 scrollbarv = tk.Scrollbar(root, orient="vertical") # Scroll bar for treeview
 scrollbarh = tk.Scrollbar(root, orient="horizontal") # Scroll bar for treeview
 
 # Label title
-tk.Label(root, text="DB Creator", font="Arial 20").place(x=50, y=10)
+tk.Label(root, text="CSV to DBlite3", font="Arial 20").place(x=50, y=10)
 
 # Label for browse
 lbl_filename = tk.Label(root, text="DB Creator", font="Arial 10")
