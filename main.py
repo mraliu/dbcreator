@@ -1,27 +1,48 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
-import tkinter as tk
 
+# Check
+def createstructure(data):
+    tablestructure = [False for _ in range(len(data[0].split(",")))]
+    for d in data:
+        headings = d.split(",")
+        for id, field in enumerate(headings):
+            tablestructure[id] = field.isnumeric()
+    tablestructure = ["INTEGER" if dt == True else "TEXT" for dt in tablestructure ]
+    return tablestructure
+
+# Get filename
+def getfilename(filenamedir):
+    return filenamedir[filenamedir.rfind("/")+1:]
+
+# Get name of file
+def getnameoffile(filename):
+    return filename[:filename.rfind(".")]
+
+# SQL Create Statement
 def createtable():
-    print(csvheadings)
+    tablestructure = createstructure(thedata)
+    # print(tablestructure)
+    # print("Number of fields:", len(csvheadings), filenamedir)
+    filen = getnameoffile(filename)
+    sql_newtable = f"CREATE TABLE IF NOT EXISTS {filen} ("
+    for idx, field in enumerate(csvheadings):
+        sql_newtable+="'" + field + "' " + tablestructure[idx] + ", "
+    sql_newtable = sql_newtable[:-2] + ")"
 
-    sql_newtable = """
-    CREATE TABLE [IF NOT EXISTS] [schema_name].table_name (
-        column_1 data_type PRIMARY KEY,
-        column_2 data_type NOT NULL,
-        column_3 data_type DEFAULT 0,
-        table_constraints
-    ) [WITHOUT ROWID];
-"""
+    print(sql_newtable)
+    return sql_newtable
+
 
 # GUI for window
 def browseFiles():  # Part of the browse button
-    global csvheadings, lbl_status, lbl_filename, thedata, dataview
-    filename = filedialog.askopenfilename(initialdir = "%USERNAME%", title = "Select a File", filetypes = (("CSV file." ,"*.csv*"),("All files" ,"*.*")))
-    lbl_filename.configure(text="File opened: "+filename)
-    csvheadings = tuple(csv2array(filename)[0].split(","))
-    thedata = csv2array(filename)[1:21]
+    global csvheadings, thedata, filenamedir, filename
+    filenamedir = filedialog.askopenfilename(initialdir = "%USERNAME%", title = "Select a File", filetypes = (("CSV file." ,"*.csv*"), ("All files" ,"*.*")))
+    lbl_filename.configure(text="File opened: "+filenamedir)
+    filename = getfilename(filenamedir)
+    csvheadings = tuple(csv2array(filenamedir)[0].split(","))
+    thedata = csv2array(filenamedir)[1:21]
 
     # Show treeview
     dataview = displaytable(csvheadings, thedata)
@@ -38,7 +59,6 @@ def browseFiles():  # Part of the browse button
     lbl_status.configure(text="Previewing 20 records.")
     btn_dbcreate = tk.Button(root, text="Create", command=createtable)
     btn_dbcreate.place(x=50,y=90)
-
 
 def csv2array(file: str):
     return open(file, encoding="utf8").read().splitlines()
@@ -58,6 +78,7 @@ def displaytable(fielding, thedata):
         treeview.insert("", tk.END, text=row+1, values=tuple(rowinfo))
     return treeview
 
+filenamedir = ""
 filename = ""
 csvheadings = () # Need to construct table in db
 thedata = [] # Need to insert into db
@@ -78,7 +99,7 @@ tk.Label(root, text="DB Creator", font="Arial 20").place(x=50, y=10)
 # Label for browse
 lbl_filename = tk.Label(root, text="DB Creator", font="Arial 10")
 lbl_filename.place(x=110, y=62)
-lbl_filename.configure(text="File: "+ filename)
+lbl_filename.configure(text="File: "+ filenamedir)
 
 # Button for browse
 tk.Button(root, text="Browse", command=browseFiles).place(x=50,y=60)
