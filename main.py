@@ -65,22 +65,21 @@ def insertdatadb():
         insertarray.append(insertsql)
     return insertarray
 
+# Create table in db and insert records
 def createdbtbl():
     createdb(createtable())
     insertrecords = insertdatadb()
-
     conn = sqlite3.connect(f'{filen}.db')
     cursor = conn.cursor()
-
-
     for record in insertrecords:
         cursor.execute(record)
-        # print(record)
-        lbl_status.configure(text=record)
-
+        
     conn.commit()
     conn.close()
-    print("Records inserted.")
+    # print("Records inserted.")
+    lbl_status.configure(text="Database created.")
+    # btn_dbcreate = tk.Button(root, text="View data")
+    # btn_dbcreate.place(x=160,y=90, width=100)
 
 # GUI for window
 def browseFiles():  # Part of the browse button
@@ -105,11 +104,10 @@ def browseFiles():  # Part of the browse button
     scrollbarh.config(command = dataview.xview)
 
     lbl_status.configure(text="Previewing 20 records.")
-    btn_tbcreate = tk.Button(root, text="Create db", command=createdbtbl)
+    btn_tbcreate = tk.Button(root, text="Create database", command=createdbtbl)
     btn_tbcreate.place(x=50,y=90, width=100)
     
-    btn_dbcreate = tk.Button(root, text="Insert data", command=insertdatadb)
-    btn_dbcreate.place(x=160,y=90, width=100)
+    
 
 def csv2array(file: str):
     return open(file, encoding="utf8").read().splitlines()
